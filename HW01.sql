@@ -62,5 +62,23 @@ having COUNT(ID) > 3
 
 -- G. For 119 nurses there exist another nurse with the same name. For how many physicians does there exist another physician with the same name?
 
-select COUNT(*)
-from HealthcareWorker
+
+-- find how many nurses have the same name as another nurse
+
+
+select healthcareworker.name
+from healthcareworker
+where RID = 0
+group by name 
+having COUNT(name) > 1
+
+
+
+SELECT COUNT(*)
+FROM HealthcareWorker
+WHERE HealthcareWorker.name IN (SELECT HealthcareWorker.name FROM HealthcareWorker
+JOIN Role ON HealthcareWorker.RID = Role.ID
+WHERE Role.name = 'Nurse'
+GROUP BY HealthcareWorker.name
+HAVING COUNT(*) >1);
+
