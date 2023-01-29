@@ -42,11 +42,24 @@ and hospital.type = 'Government'
 
 -- Rétt -- 
 
+-- Ágústu svar:
+SELECT COUNT(*) AS TotalAdmissions
+FROM Admitted
+WHERE HID IN (
+    SELECT ID
+    FROM Hospital
+    WHERE LOWER(type) = 'government'
+);
+
 -- D.  Three healthcare workers have quit more than once. How many healthcare workers have quit at least once?
 
 select COUNT(*) from works
 where quit_date is not null
 
+-- Ágústu svar:
+SELECT COUNT(*)
+FROM Works
+WHERE quit_date IS NOT NULL
 
 -- E.  How many patients have been admitted to a hospital in the same city as they live in?
 
@@ -55,6 +68,13 @@ from Admitted,patient,hospital
 where Admitted.PID = patient.ID
 and Admitted.HID = hospital.ID
 and patient.city = hospital.city
+
+-- Ágústu svar:
+SELECT COUNT(*)
+FROM Patient P
+    JOIN Admitted A ON P.ID = A.PID
+    JOIN Hospital H ON A.HID = H.ID
+WHERE P.city like CONCAT('%', H.city, '%');
 
 -- veit ekki með þetta -- 
 
@@ -67,6 +87,16 @@ join admitted on patient.ID = admitted.PID
 group by patient.ID
 having COUNT(ID) > 3
 
+
+-- Ágústu svar:
+SELECT COUNT(*)
+FROM Patient
+WHERE ID IN (
+    SELECT PID
+    FROM Admitted
+    GROUP BY PID
+    HAVING COUNT(*) > 3
+);
 
 -- G. For 119 nurses there exist another nurse with the same name. For how many physicians does there exist another physician with the same name?
 
