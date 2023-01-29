@@ -27,7 +27,11 @@ join role on HealthcareWorker.ID = role.ID
 and role.name = 'Nurse' 
 
 --EKKI RETT-- 
-
+-- Ágústu svar:
+SELECT CEILING(AVG(salary))
+FROM HealthcareWorker HCW
+    JOIN Role R ON HCW.RID = R.ID
+WHERE R.name = 'Technician';
 
 --C. There were 5510 admissions to private hospitals. How many admissions were there to government hospitals?
 
