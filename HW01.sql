@@ -9,6 +9,10 @@ select COUNT (*)
 from condition
 where name like '%kidney%' or name like '%Kidney%'
 
+--Ágústu svar:
+SELECT COUNT(*)
+FROM Condition
+WHERE LOWER(name) LIKE '%kidney%';
 
 --B.  The average salary of all registered nurses is 77265 (rounded). What is the average salary of all registered technicians (rounded)?
 
