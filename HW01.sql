@@ -120,3 +120,39 @@ WHERE Role.name = 'Nurse'
 GROUP BY HealthcareWorker.name
 HAVING COUNT(*) >1);
 
+
+-- 8/G. How many healthcare workers have not treated anyone?
+SELECT COUNT(*)
+FROM HealthcareWorker 
+WHERE HealthcareWorker.ID NOT IN (
+    SELECT DISTINCT HasTreated.HWID
+    FROM HasTreated
+);
+
+
+-- 9/I. What condition(s) are most common? Return the result in a column named 
+-- "Most common condition(s)"
+SELECT name, COUNT(name) AS "Most common condition(s)"
+FROM Condition
+JOIN Has ON Condition.ID = Has.CID
+GROUP BY name
+ORDER BY "Most common condition(s)" DESC
+LIMIT 1;
+
+
+
+-- J. Write a query that returns a duplicate-free list of condition(s) of patients that 
+-- were admitted to a hospital in either Torrington or Cheyenne on the same day 
+-- that a worker who treated them quit.
+
+SELECT DISTINCT Condition.name
+FROM Condition
+    JOIN Has ON Condition.ID = Has.CID
+    JOIN Patient ON Has.PID = Patient.ID
+    JOIN Admitted ON Patient.ID = Admitted.PID
+    JOIN Hospital ON Admitted.HID = Hospital.ID
+    JOIN HasTreated ON Patient.ID = HasTreated.PID
+    JOIN HealthcareWorker ON HasTreated.HWID = HealthcareWorker.ID
+    JOIN Works ON HealthcareWorker.ID = Works.HWID
+WHERE (Hospital.city = 'Torrington' OR Hospital.city = 'Cheyenne')
+    AND Admitted.admitted_date = Works.quit_date;
