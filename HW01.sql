@@ -6,47 +6,45 @@
 
 
 --A.
-
-select COUNT (*)
-from condition
-where name like '%kidney%' or name like '%Kidney%'
-
-
---B.  The average salary of all registered nurses is 77265 (rounded). What is the average salary of all registered technicians (rounded)?
-
-select AVG(ROUND(salary,2)) AS AverageSalary
-from HealthcareWorker,role
-where HealthcareWorker.ID = role.ID
-and role.name = 'Technician' 
+SELECT COUNT(*)
+FROM Condition
+WHERE LOWER(name) LIKE '%kidney%';
 
 
+--B.  
 
---C. There were 5510 admissions to private hospitals. How many admissions were there to government hospitals?
-
-select COUNT(*) AS TotalAdmissions
-from Admitted,hospital
-where Admitted.HID = hospital.ID
-and hospital.type = 'Government'
-
-
--- D.  Three healthcare workers have quit more than once. How many healthcare workers have quit at least once?
+SELECT AVG(ROUND(salary,2)) AS AverageSalary
+FROM HealthcareWorker,role
+WHERE HealthcareWorker.ID = role.ID
+AND role.name = 'Technician' 
 
 
-select COUNT(*) 
-from works
-where quit_date is not null
-and quit_date > start_date 
 
--- E.  How many patients have been admitted to a hospital in the same city as they live in?
+--C. 
+
+SELECT COUNT(*) AS TotalAdmissions
+FROM Admitted,hospital
+WHERE Admitted.HID = hospital.ID
+AND hospital.type = 'Government'
+
+
+-- D. 
+
+SELECT COUNT(*)
+FROM Works
+WHERE quit_date IS NOT NULL
+
+
+-- E.  
 
 SELECT COUNT(*)
 FROM Patient P
     JOIN Admitted A ON P.ID = A.PID
     JOIN Hospital H ON A.HID = H.ID
-WHERE P.city like CONCAT('%', H.city, '%');
+WHERE P.city like CONCAT('%', H.city);
 
 
--- F. There were 173 patients admitted to a hospital more than 2 times. How many patients were admitted more than 3 times?
+-- F. 
 
 SELECT COUNT(*)
 FROM Patient
@@ -57,7 +55,7 @@ WHERE ID IN (
     HAVING COUNT(*) > 3
 );
 
--- G. For 119 nurses there exist another nurse with the same name. For how many physicians does there exist another physician with the same name?
+-- G.
 
 SELECT COUNT(*)
 FROM HealthcareWorker
@@ -70,8 +68,7 @@ WHERE name IN (
 );
 
 
--- H. How many healthcare workers have not treated anyone?
-
+-- H. 
 
 SELECT COUNT(*)
 FROM HealthcareWorker 
@@ -80,24 +77,23 @@ WHERE HealthcareWorker.ID NOT IN (
     FROM HasTreated
 );
 
--- I. What condition(s) are most common? Return the result in a column named "Most common condition(s)
+-- I.
 
-
-select distinct name 
-from Condition
-join Has on Condition.ID = Has.CID
-where name in (
-    select name
-    from Condition
-    join Has on Condition.ID = Has.CID
-    group by name
-    having COUNT(name) = (
-        select MAX("Most common condition(s)")
-        from (
-            select COUNT(name) AS "Most common condition(s)"
-            from Condition
-            join Has on Condition.ID = Has.CID
-            group by name
+SELECT DISTINCT name 
+FROM Condition
+    JOIN Has on Condition.ID = Has.CID
+WHERE name IN (
+    SELECT name
+    FROM Condition
+        JOIN Has on Condition.ID = Has.CID
+    GROUP BY name
+    HAVING COUNT(name) = (
+        SELECT MAX("Most common condition(s)")
+        FROM (
+            SELECT COUNT(name) AS "Most common condition(s)"
+            FROM Condition
+                JOIN Has ON Condition.ID = Has.CID
+            GROUP BY name
         )   X
     )
 );
