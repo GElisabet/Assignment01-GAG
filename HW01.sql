@@ -12,31 +12,27 @@ WHERE LOWER(name) LIKE '%kidney%';
 
 
 --B.  
-
 SELECT AVG(ROUND(salary,2)) AS AverageSalary
 FROM HealthcareWorker,role
 WHERE HealthcareWorker.ID = role.ID
-AND role.name = 'Technician' 
+AND role.name = 'Technician';
 
 
 
 --C. 
-
 SELECT COUNT(*) AS TotalAdmissions
 FROM Admitted,hospital
 WHERE Admitted.HID = hospital.ID
-AND hospital.type = 'Government'
+AND hospital.type = 'Government';
 
 
 -- D. 
-
 SELECT COUNT(*)
 FROM Works
-WHERE quit_date IS NOT NULL
+WHERE quit_date IS NOT NULL;
 
 
 -- E.  
-
 SELECT COUNT(*)
 FROM Patient P
     JOIN Admitted A ON P.ID = A.PID
@@ -45,7 +41,6 @@ WHERE P.city like CONCAT('%', H.city);
 
 
 -- F. 
-
 SELECT COUNT(*)
 FROM Patient
 WHERE ID IN (
@@ -55,8 +50,8 @@ WHERE ID IN (
     HAVING COUNT(*) > 3
 );
 
--- G.
 
+-- G.
 SELECT COUNT(*)
 FROM HealthcareWorker
 WHERE name IN (
@@ -69,7 +64,6 @@ WHERE name IN (
 
 
 -- H. 
-
 SELECT COUNT(*)
 FROM HealthcareWorker 
 WHERE HealthcareWorker.ID NOT IN (
@@ -77,8 +71,8 @@ WHERE HealthcareWorker.ID NOT IN (
     FROM HasTreated
 );
 
--- I.
 
+-- I.
 SELECT DISTINCT name 
 FROM Condition
     JOIN Has on Condition.ID = Has.CID
@@ -99,9 +93,7 @@ WHERE name IN (
 );
 
 
-
 -- J 
-
 SELECT DISTINCT Condition.name
 FROM Condition
 JOIN Has ON Condition.ID = Has.CID
