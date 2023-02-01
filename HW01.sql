@@ -11,14 +11,29 @@ select COUNT (*)
 from condition
 where name like '%kidney%' or name like '%Kidney%'
 
+--Ágústu svar:
+SELECT COUNT(*)
+FROM Condition
+WHERE LOWER(name) LIKE '%kidney%';
 
 --B.  The average salary of all registered nurses is 77265 (rounded). What is the average salary of all registered technicians (rounded)?
 
-SELECT CEILING(AVG(salary))
-FROM HealthcareWorker 
-JOIN Role ON HealthcareWorker.RID = Role.ID
-WHERE Role.name = 'Technician';
+select AVG(ROUND(salary,2)) AS AverageSalary
+from HealthcareWorker,role
+where HealthcareWorker.ID = role.ID
+and role.name = 'Technician' 
 
+select AVG(ROUND(salary,2)) AS AverageSalary
+from HealthcareWorker
+join role on HealthcareWorker.ID = role.ID
+and role.name = 'Nurse' 
+
+--EKKI RETT-- 
+-- Ágústu svar:
+SELECT CEILING(AVG(salary))
+FROM HealthcareWorker HCW
+    JOIN Role R ON HCW.RID = R.ID
+WHERE R.name = 'Technician';
 
 --C. There were 5510 admissions to private hospitals. How many admissions were there to government hospitals?
 
@@ -27,6 +42,15 @@ from Admitted,hospital
 where Admitted.HID = hospital.ID
 and hospital.type = 'Government'
 
+
+-- Ágústu svar:
+SELECT COUNT(*) AS TotalAdmissions
+FROM Admitted
+WHERE HID IN (
+    SELECT ID
+    FROM Hospital
+    WHERE LOWER(type) = 'government'
+);
 
 -- D.  Three healthcare workers have quit more than once. How many healthcare workers have quit at least once?
 
@@ -47,11 +71,14 @@ where city in (
     group by city
 )
 
-select count(*)
-from Patient as p 
-	join Admitted as A on p.id = a.pid
-	join Hospital as H on a.hid = H.id
-where h.city = p.city
+-- Ágústu svar:
+SELECT COUNT(*)
+FROM Patient P
+    JOIN Admitted A ON P.ID = A.PID
+    JOIN Hospital H ON A.HID = H.ID
+WHERE P.city like CONCAT('%', H.city, '%');
+
+-- veit ekki með þetta -- 
 
 -- F. There were 173 patients admitted to a hospital more than 2 times. How many patients were admitted more than 3 times?
 
@@ -61,6 +88,16 @@ from patient
 join admitted on patient.ID = admitted.PID
 group by patient.ID
 having COUNT(ID) > 3;
+
+-- Ágústu svar:
+SELECT COUNT(*)
+FROM Patient
+WHERE ID IN (
+    SELECT PID
+    FROM Admitted
+    GROUP BY PID
+    HAVING COUNT(*) > 3
+);
 
 -- G. For 119 nurses there exist another nurse with the same name. For how many physicians does there exist another physician with the same name?
 
